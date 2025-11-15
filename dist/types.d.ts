@@ -45,6 +45,8 @@ export interface SchengenCheckerOptions {
     ulke?: string;
     sehir?: string;
     rateLimit?: number;
+    cache?: Partial<CacheOptions>;
+    enableStatistics?: boolean;
 }
 export interface KontrolOptions {
     sehir?: string;
@@ -82,4 +84,32 @@ export interface DocumentItem {
     description: string;
     format?: string;
     quantity?: number;
+}
+export interface CacheOptions {
+    enabled: boolean;
+    ttl: number;
+    maxSize: number;
+}
+export interface CacheEntry<T> {
+    data: T;
+    timestamp: number;
+    expiresAt: number;
+}
+export interface Statistics {
+    totalChecks: number;
+    successfulChecks: number;
+    failedChecks: number;
+    cacheHits: number;
+    cacheMisses: number;
+    averageResponseTime: number;
+    mostCheckedCountries: CountryStat[];
+    lastUpdated: Date;
+}
+export interface CountryStat {
+    country: string;
+    countryName: string;
+    flag: string;
+    checkCount: number;
+    successRate: number;
+    averageResponseTime: number;
 }

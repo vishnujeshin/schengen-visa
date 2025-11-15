@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SchengenChecker = void 0;
+exports.StatisticsTracker = exports.Cache = exports.SchengenChecker = void 0;
 var SchengenChecker_1 = require("./SchengenChecker");
 Object.defineProperty(exports, "SchengenChecker", { enumerable: true, get: function () { return SchengenChecker_1.SchengenChecker; } });
 __exportStar(require("./types"), exports);
@@ -22,3 +22,7 @@ __exportStar(require("./constants"), exports);
 __exportStar(require("./data/contact-info"), exports);
 __exportStar(require("./data/visa-requirements"), exports);
 __exportStar(require("./data/document-checklist"), exports);
+var Cache_1 = require("./utils/Cache");
+Object.defineProperty(exports, "Cache", { enumerable: true, get: function () { return Cache_1.Cache; } });
+var Statistics_1 = require("./utils/Statistics");
+Object.defineProperty(exports, "StatisticsTracker", { enumerable: true, get: function () { return Statistics_1.StatisticsTracker; } });

@@ -31,26 +31,27 @@ import { SchengenChecker } from 'schengen-randevu-checker';
 
 const checker = new SchengenChecker({ 
   sehir: 'ankara',
-  rateLimit: 2000 
+  rateLimit: 2000,
+  cache: {
+    enabled: true,
+    ttl: 5 * 60 * 1000, // 5 minutes
+    maxSize: 100
+  },
+  enableStatistics: true
 });
 
-// Check single country
-const result = await checker.musaitRandevuKontrol('fransa');
-console.log(result);
-// {
-//   ulke: 'fransa',
-//   durum: 'dolu',
-//   mesaj: 'Şu an müsait randevu bulunmuyor',
-//   url: 'https://france-visas.gouv.fr/...',
-//   kontrolTarihi: 2025-11-13T19:00:00.000Z
-// }
+// Check single country (first call - cache miss)
+const result1 = await checker.musaitRandevuKontrol('fransa'); // ~300ms
+console.log(result1);
 
-// Check multiple countries
-const results = await checker.topluRandevuKontrol([
-  'fransa', 
-  'hollanda', 
-  'almanya'
-]);
+// Check again (cache hit - blazing fast!)
+const result2 = await checker.musaitRandevuKontrol('fransa'); // ~0.03ms
+
+// Get statistics
+const stats = checker.getStatistics();
+console.log(`Success Rate: ${checker.getSuccessRate()}%`);
+console.log(`Cache Hit Rate: ${checker.getCacheHitRate()}%`);
+console.log(`Avg Response Time: ${stats.averageResponseTime}ms`);
 ```
 
 ### JavaScript (CommonJS)
@@ -88,12 +89,20 @@ checker.musaitRandevuKontrol('fransa').then(result => {
 | 🇱🇻 Latvia | `letonya` | Ankara |
 | 🇵🇱 Poland | `polonya` | Ankara, Istanbul |
 
-## 🆕 What's New in v2.1.0
+## 🆕 What's New in v2.2.0
 
-- ✅ **Contact Information** - Get embassy/consulate contact details
-- ✅ **Visa Requirements** - Detailed visa requirements for each country
-- ✅ **Document Checklist** - Complete document checklist for applications
-- ✅ **Comprehensive Country Info** - All information in one call
+- ⚡ **In-Memory Caching** - Blazing fast repeated checks (300ms → 0.03ms)
+- 📊 **Statistics Tracking** - Monitor success rates, response times, and usage
+- 🎯 **Performance Monitoring** - Track cache hit rates and average response times
+- 🔧 **Configurable Cache** - Customize TTL, size, and enable/disable on the fly
+
+### Previous Releases
+
+**v2.1.0:**
+- ✅ Contact Information - Embassy/consulate contact details
+- ✅ Visa Requirements - Detailed visa requirements for each country
+- ✅ Document Checklist - Complete document checklist for applications
+- ✅ Comprehensive Country Info - All information in one call
 
 ## 📚 API Reference
 
@@ -106,6 +115,11 @@ new SchengenChecker(options?: SchengenCheckerOptions)
 **Options:**
 - `sehir?: string` - Default city (default: `'ankara'`)
 - `rateLimit?: number` - Delay between requests in ms (default: `2000`)
+- `cache?: CacheOptions` - Cache configuration
+  - `enabled?: boolean` - Enable/disable cache (default: `true`)
+  - `ttl?: number` - Time to live in ms (default: `300000` - 5 minutes)
+  - `maxSize?: number` - Maximum cache entries (default: `100`)
+- `enableStatistics?: boolean` - Enable statistics tracking (default: `true`)
 
 ### Methods
 
@@ -274,6 +288,92 @@ console.log(fullInfo.contacts); // Contact information
 console.log(fullInfo.requirements); // Visa requirements
 console.log(fullInfo.checklist); // Document checklist
 console.log(fullInfo.hasFullInfo); // true if all data available
+```
+
+### 🆕 Cache & Statistics Methods (v2.2.0)
+
+#### `getCacheStats(): CacheStats`
+
+Get cache statistics.
+
+```typescript
+const stats = checker.getCacheStats();
+console.log(stats.size); // Current cache size
+console.log(stats.hits); // Cache hits
+console.log(stats.misses); // Cache misses
+console.log(stats.hitRate); // Hit rate percentage
+```
+
+#### `clearCache(): void`
+
+Clear all cached data.
+
+```typescript
+checker.clearCache();
+```
+
+#### `setCacheEnabled(enabled: boolean): void`
+
+Enable or disable caching.
+
+```typescript
+checker.setCacheEnabled(false); // Disable cache
+checker.setCacheEnabled(true);  // Enable cache
+```
+
+#### `setCacheTTL(ttl: number): void`
+
+Set cache time-to-live in milliseconds.
+
+```typescript
+checker.setCacheTTL(10 * 60 * 1000); // 10 minutes
+```
+
+#### `getStatistics(): Statistics`
+
+Get comprehensive statistics.
+
+```typescript
+const stats = checker.getStatistics();
+console.log(stats.totalChecks);
+console.log(stats.successfulChecks);
+console.log(stats.averageResponseTime);
+console.log(stats.mostCheckedCountries); // Top 10 countries
+```
+
+#### `getCountryStatistics(country: string): CountryStat`
+
+Get statistics for a specific country.
+
+```typescript
+const franceStats = checker.getCountryStatistics('fransa');
+console.log(franceStats.checkCount);
+console.log(franceStats.successRate);
+console.log(franceStats.averageResponseTime);
+```
+
+#### `getSuccessRate(): number`
+
+Get overall success rate percentage.
+
+```typescript
+const rate = checker.getSuccessRate(); // e.g., 85.5
+```
+
+#### `getCacheHitRate(): number`
+
+Get cache hit rate percentage.
+
+```typescript
+const hitRate = checker.getCacheHitRate(); // e.g., 75.0
+```
+
+#### `resetStatistics(): void`
+
+Reset all statistics.
+
+```typescript
+checker.resetStatistics();
 ```
 
 ## 🔧 TypeScript Types

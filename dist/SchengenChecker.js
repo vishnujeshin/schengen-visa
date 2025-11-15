@@ -9,11 +9,16 @@ const constants_1 = require("./constants");
 const contact_info_1 = require("./data/contact-info");
 const visa_requirements_1 = require("./data/visa-requirements");
 const document_checklist_1 = require("./data/document-checklist");
+const Cache_1 = require("./utils/Cache");
+const Statistics_1 = require("./utils/Statistics");
 class SchengenChecker {
     constructor(options = {}) {
         this.randevular = [];
         this.sehir = options.sehir || 'ankara';
         this.rateLimit = options.rateLimit || 2000;
+        this.cache = new Cache_1.Cache(options.cache);
+        this.statistics = new Statistics_1.StatisticsTracker();
+        this.enableStatistics = options.enableStatistics ?? true;
     }
     /**
      * Schengen ülkesi kontrolü
@@ -25,32 +30,57 @@ class SchengenChecker {
      * Müsait randevu kontrolü
      */
     async musaitRandevuKontrol(ulke, options = {}) {
+        const startTime = Date.now();
         if (!this.schengenMi(ulke)) {
             throw new Error(`${ulke} Schengen ülkesi değil!`);
         }
+        const sehir = options.sehir || this.sehir;
+        const vizeTipi = options.vizeTipi || 'turist';
+        const cacheKey = `${ulke}-${sehir}-${vizeTipi}`;
+        // Check cache first
+        const cached = this.cache.get(cacheKey);
+        if (cached) {
+            const responseTime = Date.now() - startTime;
+            if (this.enableStatistics) {
+                this.statistics.recordCheck(cached, responseTime, true);
+            }
+            return cached;
+        }
         const vizeMerkezi = constants_1.VIZE_MERKEZLERI[ulke.toLowerCase()];
         if (!vizeMerkezi) {
-            return {
+            const result = {
                 ulke,
                 durum: 'bilinmiyor',
                 mesaj: 'Bu ülke için otomatik kontrol henüz desteklenmiyor',
                 url: '',
                 kontrolTarihi: new Date()
             };
+            return result;
         }
-        const sehir = options.sehir || this.sehir;
-        const vizeTipi = options.vizeTipi || 'turist';
         try {
-            return await this.gercekRandevuKontrol(ulke, sehir, vizeTipi, vizeMerkezi);
+            const result = await this.gercekRandevuKontrol(ulke, sehir, vizeTipi, vizeMerkezi);
+            // Cache the result
+            this.cache.set(cacheKey, result);
+            // Record statistics
+            const responseTime = Date.now() - startTime;
+            if (this.enableStatistics) {
+                this.statistics.recordCheck(result, responseTime, false);
+            }
+            return result;
         }
         catch (error) {
-            return {
+            const result = {
                 ulke,
                 durum: 'hata',
                 mesaj: `Kontrol sırasında hata: ${error.message}`,
                 url: vizeMerkezi.url,
                 kontrolTarihi: new Date()
             };
+            const responseTime = Date.now() - startTime;
+            if (this.enableStatistics) {
+                this.statistics.recordCheck(result, responseTime, false);
+            }
+            return result;
         }
     }
     /**
@@ -259,6 +289,66 @@ class SchengenChecker {
             checklist,
             hasFullInfo: !!(config && contacts.length > 0 && requirements && checklist)
         };
+    }
+    /**
+     * Get cache statistics
+     */
+    getCacheStats() {
+        return this.cache.getStats();
+    }
+    /**
+     * Clear cache
+     */
+    clearCache() {
+        this.cache.clear();
+    }
+    /**
+     * Clear expired cache entries
+     */
+    clearExpiredCache() {
+        this.cache.clearExpired();
+    }
+    /**
+     * Enable/disable cache
+     */
+    setCacheEnabled(enabled) {
+        this.cache.setEnabled(enabled);
+    }
+    /**
+     * Set cache TTL
+     */
+    setCacheTTL(ttl) {
+        this.cache.setTTL(ttl);
+    }
+    /**
+     * Get statistics
+     */
+    getStatistics() {
+        return this.statistics.getStatistics();
+    }
+    /**
+     * Get country-specific statistics
+     */
+    getCountryStatistics(country) {
+        return this.statistics.getCountryStatistics(country);
+    }
+    /**
+     * Reset statistics
+     */
+    resetStatistics() {
+        this.statistics.reset();
+    }
+    /**
+     * Get success rate
+     */
+    getSuccessRate() {
+        return this.statistics.getSuccessRate();
+    }
+    /**
+     * Get cache hit rate
+     */
+    getCacheHitRate() {
+        return this.statistics.getCacheHitRate();
     }
     bekle(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));

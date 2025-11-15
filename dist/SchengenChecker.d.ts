@@ -1,8 +1,11 @@
-import { SchengenCheckerOptions, KontrolOptions, RandevuKontrolSonuc, VizeMerkezi, CountryConfig, ContactInfo, VisaRequirements, DocumentChecklist } from './types';
+import { SchengenCheckerOptions, KontrolOptions, RandevuKontrolSonuc, VizeMerkezi, CountryConfig, ContactInfo, VisaRequirements, DocumentChecklist, Statistics } from './types';
 export declare class SchengenChecker {
     private sehir;
     private rateLimit;
     private randevular;
+    private cache;
+    private statistics;
+    private enableStatistics;
     constructor(options?: SchengenCheckerOptions);
     /**
      * Schengen ülkesi kontrolü
@@ -100,5 +103,53 @@ export declare class SchengenChecker {
         checklist: DocumentChecklist | undefined;
         hasFullInfo: boolean;
     };
+    /**
+     * Get cache statistics
+     */
+    getCacheStats(): {
+        size: number;
+        maxSize: number;
+        hits: number;
+        misses: number;
+        hitRate: string;
+        enabled: boolean;
+        ttl: number;
+    };
+    /**
+     * Clear cache
+     */
+    clearCache(): void;
+    /**
+     * Clear expired cache entries
+     */
+    clearExpiredCache(): void;
+    /**
+     * Enable/disable cache
+     */
+    setCacheEnabled(enabled: boolean): void;
+    /**
+     * Set cache TTL
+     */
+    setCacheTTL(ttl: number): void;
+    /**
+     * Get statistics
+     */
+    getStatistics(): Statistics;
+    /**
+     * Get country-specific statistics
+     */
+    getCountryStatistics(country: string): import("./types").CountryStat | null;
+    /**
+     * Reset statistics
+     */
+    resetStatistics(): void;
+    /**
+     * Get success rate
+     */
+    getSuccessRate(): number;
+    /**
+     * Get cache hit rate
+     */
+    getCacheHitRate(): number;
     private bekle;
 }
