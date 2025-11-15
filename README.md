@@ -1,4 +1,4 @@
-# 🔍 Schengen Randevu Checker
+# 🔍 Schengen Visa
 
 [![npm version](https://img.shields.io/npm/v/schengen-randevu-checker.svg)](https://www.npmjs.com/package/schengen-randevu-checker)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
