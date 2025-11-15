@@ -19,3 +19,6 @@ var SchengenChecker_1 = require("./SchengenChecker");
 Object.defineProperty(exports, "SchengenChecker", { enumerable: true, get: function () { return SchengenChecker_1.SchengenChecker; } });
 __exportStar(require("./types"), exports);
 __exportStar(require("./constants"), exports);
+__exportStar(require("./data/contact-info"), exports);
+__exportStar(require("./data/visa-requirements"), exports);
+__exportStar(require("./data/document-checklist"), exports);

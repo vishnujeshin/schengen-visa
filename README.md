@@ -88,6 +88,13 @@ checker.musaitRandevuKontrol('fransa').then(result => {
 | 🇱🇻 Latvia | `letonya` | Ankara |
 | 🇵🇱 Poland | `polonya` | Ankara, Istanbul |
 
+## 🆕 What's New in v2.1.0
+
+- ✅ **Contact Information** - Get embassy/consulate contact details
+- ✅ **Visa Requirements** - Detailed visa requirements for each country
+- ✅ **Document Checklist** - Complete document checklist for applications
+- ✅ **Comprehensive Country Info** - All information in one call
+
 ## 📚 API Reference
 
 ### Constructor
@@ -206,6 +213,67 @@ Get a simplified list of countries with flags.
 ```typescript
 const list = checker.listCountriesWithFlags();
 // [{ id: 'fr', name: 'Fransa', flag: '🇫🇷', provider: 'TLScontact' }, ...]
+```
+
+### 🆕 New Methods (v2.1.0)
+
+#### `getContactInfo(countryId: string, city?: string): ContactInfo[]`
+
+Get embassy/consulate contact information.
+
+```typescript
+// Get all contacts for a country
+const contacts = checker.getContactInfo('fr');
+
+// Get contacts for specific city
+const ankaraContact = checker.getContactInfo('de', 'ankara');
+console.log(ankaraContact[0].phone); // +90 312 455 51 00
+console.log(ankaraContact[0].address);
+console.log(ankaraContact[0].workingHours);
+```
+
+#### `getVisaRequirements(countryId: string, visaType?: string): VisaRequirements`
+
+Get detailed visa requirements.
+
+```typescript
+const requirements = checker.getVisaRequirements('fr', 'tourist');
+console.log(requirements.processingTime); // "15 iş günü"
+console.log(requirements.visaFee); // "80 EUR (yetişkin)"
+console.log(requirements.requiredDocuments); // Array of required documents
+console.log(requirements.additionalInfo); // Tips and notes
+```
+
+#### `getDocumentChecklist(countryId: string, visaType?: string): DocumentChecklist`
+
+Get complete document checklist for visa application.
+
+```typescript
+const checklist = checker.getDocumentChecklist('de', 'tourist');
+console.log(checklist.mandatory); // Required documents
+console.log(checklist.optional); // Optional documents
+console.log(checklist.tips); // Application tips
+
+// Example output:
+// {
+//   name: 'Pasaport',
+//   description: 'En az 3 ay geçerli, 2 boş sayfa',
+//   format: 'Orijinal + fotokopi',
+//   quantity: 1
+// }
+```
+
+#### `getCountryFullInfo(countryId: string): FullCountryInfo`
+
+Get all information about a country in one call.
+
+```typescript
+const fullInfo = checker.getCountryFullInfo('fr');
+console.log(fullInfo.config); // Country configuration
+console.log(fullInfo.contacts); // Contact information
+console.log(fullInfo.requirements); // Visa requirements
+console.log(fullInfo.checklist); // Document checklist
+console.log(fullInfo.hasFullInfo); // true if all data available
 ```
 
 ## 🔧 TypeScript Types

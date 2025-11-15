@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchengenChecker = void 0;
 const axios_1 = __importDefault(require("axios"));
 const constants_1 = require("./constants");
+const contact_info_1 = require("./data/contact-info");
+const visa_requirements_1 = require("./data/visa-requirements");
+const document_checklist_1 = require("./data/document-checklist");
 class SchengenChecker {
     constructor(options = {}) {
         this.randevular = [];
@@ -216,6 +219,46 @@ class SchengenChecker {
             flag: c.flag,
             provider: c.provider
         }));
+    }
+    /**
+     * Konsolosluk/Vize merkezi iletişim bilgilerini getir
+     */
+    getContactInfo(countryId, city) {
+        return (0, contact_info_1.getContactInfo)(countryId, city);
+    }
+    /**
+     * Vize gereksinimlerini getir
+     */
+    getVisaRequirements(countryId, visaType = 'tourist') {
+        return (0, visa_requirements_1.getVisaRequirements)(countryId, visaType);
+    }
+    /**
+     * Ülkenin tüm vize türlerini getir
+     */
+    getAllVisaTypes(countryId) {
+        return (0, visa_requirements_1.getAllVisaTypes)(countryId);
+    }
+    /**
+     * Dokümantasyon kontrol listesini getir
+     */
+    getDocumentChecklist(countryId, visaType = 'tourist') {
+        return (0, document_checklist_1.getDocumentChecklist)(countryId, visaType);
+    }
+    /**
+     * Ülke hakkında kapsamlı bilgi getir
+     */
+    getCountryFullInfo(countryId) {
+        const config = (0, constants_1.getCountryConfig)(countryId);
+        const contacts = this.getContactInfo(countryId);
+        const requirements = this.getVisaRequirements(countryId);
+        const checklist = this.getDocumentChecklist(countryId);
+        return {
+            config,
+            contacts,
+            requirements,
+            checklist,
+            hasFullInfo: !!(config && contacts.length > 0 && requirements && checklist)
+        };
     }
     bekle(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));

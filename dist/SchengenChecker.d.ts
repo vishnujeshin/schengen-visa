@@ -1,4 +1,4 @@
-import { SchengenCheckerOptions, KontrolOptions, RandevuKontrolSonuc, VizeMerkezi, CountryConfig } from './types';
+import { SchengenCheckerOptions, KontrolOptions, RandevuKontrolSonuc, VizeMerkezi, CountryConfig, ContactInfo, VisaRequirements, DocumentChecklist } from './types';
 export declare class SchengenChecker {
     private sehir;
     private rateLimit;
@@ -74,5 +74,31 @@ export declare class SchengenChecker {
         flag: string;
         provider: string;
     }>;
+    /**
+     * Konsolosluk/Vize merkezi iletişim bilgilerini getir
+     */
+    getContactInfo(countryId: string, city?: string): ContactInfo[];
+    /**
+     * Vize gereksinimlerini getir
+     */
+    getVisaRequirements(countryId: string, visaType?: string): VisaRequirements | undefined;
+    /**
+     * Ülkenin tüm vize türlerini getir
+     */
+    getAllVisaTypes(countryId: string): VisaRequirements[];
+    /**
+     * Dokümantasyon kontrol listesini getir
+     */
+    getDocumentChecklist(countryId: string, visaType?: string): DocumentChecklist | undefined;
+    /**
+     * Ülke hakkında kapsamlı bilgi getir
+     */
+    getCountryFullInfo(countryId: string): {
+        config: CountryConfig | undefined;
+        contacts: ContactInfo[];
+        requirements: VisaRequirements | undefined;
+        checklist: DocumentChecklist | undefined;
+        hasFullInfo: boolean;
+    };
     private bekle;
 }

@@ -55,3 +55,40 @@ export interface KontrolOptions {
   sehir?: string;
   vizeTipi?: string;
 }
+
+export interface ContactInfo {
+  country: string;
+  city: string;
+  address: string;
+  phone: string;
+  email?: string;
+  website: string;
+  workingHours: string;
+  emergencyContact?: string;
+}
+
+export interface VisaRequirements {
+  country: string;
+  visaType: string;
+  requiredDocuments: string[];
+  processingTime: string;
+  visaFee: string;
+  validityPeriod: string;
+  stayDuration: string;
+  additionalInfo?: string[];
+}
+
+export interface DocumentChecklist {
+  country: string;
+  visaType: string;
+  mandatory: DocumentItem[];
+  optional: DocumentItem[];
+  tips: string[];
+}
+
+export interface DocumentItem {
+  name: string;
+  description: string;
+  format?: string;
+  quantity?: number;
+}

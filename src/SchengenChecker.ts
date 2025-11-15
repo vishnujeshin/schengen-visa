@@ -5,7 +5,10 @@ import {
   RandevuKontrolSonuc, 
   Randevu,
   VizeMerkezi,
-  CountryConfig
+  CountryConfig,
+  ContactInfo,
+  VisaRequirements,
+  DocumentChecklist
 } from './types';
 import { 
   SCHENGEN_ULKELERI, 
@@ -14,6 +17,9 @@ import {
   getCountryConfig,
   getCountryConfigByName
 } from './constants';
+import { getContactInfo } from './data/contact-info';
+import { getVisaRequirements, getAllVisaTypes } from './data/visa-requirements';
+import { getDocumentChecklist } from './data/document-checklist';
 
 export class SchengenChecker {
   private sehir: string;
@@ -263,6 +269,52 @@ export class SchengenChecker {
       flag: c.flag,
       provider: c.provider
     }));
+  }
+
+  /**
+   * Konsolosluk/Vize merkezi iletişim bilgilerini getir
+   */
+  getContactInfo(countryId: string, city?: string): ContactInfo[] {
+    return getContactInfo(countryId, city);
+  }
+
+  /**
+   * Vize gereksinimlerini getir
+   */
+  getVisaRequirements(countryId: string, visaType: string = 'tourist'): VisaRequirements | undefined {
+    return getVisaRequirements(countryId, visaType);
+  }
+
+  /**
+   * Ülkenin tüm vize türlerini getir
+   */
+  getAllVisaTypes(countryId: string): VisaRequirements[] {
+    return getAllVisaTypes(countryId);
+  }
+
+  /**
+   * Dokümantasyon kontrol listesini getir
+   */
+  getDocumentChecklist(countryId: string, visaType: string = 'tourist'): DocumentChecklist | undefined {
+    return getDocumentChecklist(countryId, visaType);
+  }
+
+  /**
+   * Ülke hakkında kapsamlı bilgi getir
+   */
+  getCountryFullInfo(countryId: string) {
+    const config = getCountryConfig(countryId);
+    const contacts = this.getContactInfo(countryId);
+    const requirements = this.getVisaRequirements(countryId);
+    const checklist = this.getDocumentChecklist(countryId);
+
+    return {
+      config,
+      contacts,
+      requirements,
+      checklist,
+      hasFullInfo: !!(config && contacts.length > 0 && requirements && checklist)
+    };
   }
 
   private bekle(ms: number): Promise<void> {
